@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static Color kPrimaryColor = const Color(0xff0E887C); //Primary color of the app
+  // static Color kPrimaryColor = const Color(0xff0E887C); //Primary color of the app
+  static Color kPrimaryColor = const Color(0xffc11c7a); //Primary color of the app
 
   static LinearGradient gradient = const LinearGradient(
       colors: [Color(0xff31ACA0), Color(0xff187B71)],
@@ -18,12 +19,14 @@ class AppColors {
   static Color fadedContainerColor = const Color(0x14c5c5c5);
   static Color shadowColor = const Color.fromRGBO(0, 0, 0, 0.04);
   static Color containerColor = Colors.white;
+  static Color orderColor = const Color(0xff81fd0c);
 
   static Color appBarColor = Colors.white;
 
   static Color scaffoldColor = Colors.white; // Main background color
 
-  static Color buttonColor = const Color(0xff31aca0); // Color of buttons throughout the app
+  // static Color buttonColor = const Color(0xff31aca0); // Color of buttons throughout the app
+  static Color buttonColor = const Color(0xffc11c7a); // Color of buttons throughout the app
   static Color buttonTextColor = Colors.white;
 
   static Color facebookBlue = const Color(0xff4267B2);
@@ -52,5 +55,6 @@ class AppColors {
     800: Color.fromRGBO(14, 136, 124, 0.9),
     900: Color.fromRGBO(14, 136, 124, 1),
   };
-  static MaterialColor primaryColor = MaterialColor(0xff0E887C, color); // Material color version of primary color for integrating to flutter
+  // static MaterialColor primaryColor = MaterialColor(0xff0E887C, color); // Material color version of primary color for integrating to flutter
+  static MaterialColor primaryColor = MaterialColor(0xffc11c7a, color); // Material color version of primary color for integrating to flutter
 }
