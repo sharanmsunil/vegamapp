@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:m2/services/app_responsive.dart';
 import 'package:m2/utilities/utilities.dart';
 import 'package:m2/utilities/widgets/account_sidebar.dart';
@@ -24,6 +26,8 @@ class MyOrderDetailView extends StatefulWidget {
 }
 
 class _MyOrderDetailViewState extends State<MyOrderDetailView> {
+  DateFormat dateFormat = DateFormat('MM/dd/yyyy');
+
   @override
   void initState() {
     super.initState();
@@ -60,7 +64,7 @@ class _MyOrderDetailViewState extends State<MyOrderDetailView> {
                 padding: EdgeInsets.symmetric(
                     horizontal: constraints.maxWidth > 1400
                         ? (constraints.maxWidth - 1400) / 2
-                        : 20,
+                        : 10,
                     vertical: 20),
                 child: AppResponsive(
                   mobile: _getMobileView(size, result.data!),
@@ -93,29 +97,65 @@ class _MyOrderDetailViewState extends State<MyOrderDetailView> {
               style: AppStyles.getMediumTextStyle(
                   fontSize: 18, color: AppColors.primaryColor)),
           const SizedBox(height: 10),
-          Text('Order No: ${widget.orderId}',
+          Text('Order ID: ${widget.orderId}',
               style: AppStyles.getMediumTextStyle(
-                  fontSize: 18, color: AppColors.evenFadedText)),
-          const SizedBox(height: 20),
-          ListView.separated(
-            itemCount: data['customer']['orders']['items'][0]['items'].length,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            separatorBuilder: (ctx, index) => !AppResponsive.isDesktop(context)
-                ? const SizedBox(height: 40)
-                : Column(
-                    children: [
-                      const SizedBox(height: 40),
-                      Divider(height: 1, color: AppColors.evenFadedText),
-                      const SizedBox(height: 40),
-                    ],
-                  ),
-            itemBuilder: (context, index) => BuildOrderDetailContainer(
-              data: data['customer']['orders']['items'][0]['items'][index],
-              size: size,
-              orderId: widget.orderId,
+                  fontSize: 18, color: AppColors.fontColor)),
+          const SizedBox(height: 5),
+          RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: 'Order date:\t\t',
+                  style: AppStyles.getMediumTextStyle(
+                      fontSize: 12, color: AppColors.evenFadedText),
+                ),
+                TextSpan(
+                  text: dateFormat.format(DateTime.parse(data['customer']['orders']['items'][0]['order_date'])),
+                  style: AppStyles.getMediumTextStyle(
+                      fontSize: 12, color: AppColors.fadedText),
+                ),
+              ],
             ),
           ),
+          const SizedBox(height: 5),
+          Divider(
+            color: AppColors.primaryColor,
+          ),
+          const SizedBox(height: 5),
+          // ListView.separated(
+          //   itemCount: data['customer']['orders']['items'][0]['items'].length,
+          //   shrinkWrap: true,
+          //   physics: const NeverScrollableScrollPhysics(),
+          //   separatorBuilder: (ctx, index) => !AppResponsive.isDesktop(context)
+          //       ? const SizedBox(height: 40)
+          //       : Column(
+          //           children: [
+          //             const SizedBox(height: 40),
+          //             Divider(height: 1, color: AppColors.evenFadedText),
+          //             const SizedBox(height: 40),
+          //           ],
+          //         ),
+          //   itemBuilder: (context, index) => BuildOrderDetailContainer(
+          //     data: data['customer']['orders']['items'][0]['items'][index],
+          //     size: size,
+          //     orderId: widget.orderId,
+          //   ),
+          // ),
+          ListView.builder(
+              itemCount: data['customer']['orders']['items'][0]['items'].length,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context,index){
+                return BuildOrderDetailContainer(
+                    size: size,
+                    orderId: widget.orderId,
+                    data: data['customer']['orders']['items'][0]['items'][index]);
+              }),
+          const SizedBox(height: 5),
+          Divider(
+            color: AppColors.primaryColor,
+          ),
+          const SizedBox(height: 5),
         ],
       ),
     );
@@ -189,7 +229,7 @@ class _BuildOrderDetailContainerState extends State<BuildOrderDetailContainer> {
       child: SizedBox(
         width: widget.size.width,
         child: AppResponsive(
-          mobile: _getMobileView(),
+          mobile: _getMobileViewNew(),
           desktop: Row(
             children: [
               Flexible(flex: 5, child: _getOrderDetails()),
@@ -210,6 +250,96 @@ class _BuildOrderDetailContainerState extends State<BuildOrderDetailContainer> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Container _getMobileViewNew(){
+    return Container(
+      margin: const EdgeInsets.all(5),
+      height: 100,
+      decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 100,
+            decoration:  BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                color: AppColors.greyBgColor
+            ),
+          ),
+          const SizedBox(width: 5,),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.only(top: 5),
+                // margin: const EdgeInsets.all(10),
+                width: widget.size.width / 3,
+                child: Text(
+                  widget.data['product_name'].length > 20
+                      ? "${widget.data['product_name'].substring(0, 20.toInt())}..."
+                      : widget.data['product_name'],
+                  style: AppStyles.getMediumTextStyle(
+                      fontSize: 12, color: AppColors.fontColor),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                // margin: const EdgeInsets.all(10),
+                width: widget.size.width / 3,
+                child:
+                  Text.rich(
+                    TextSpan(
+                      text: "$currency: ",
+                      style: AppStyles.getMediumTextStyle(
+                          fontSize: 12, color: AppColors.primaryColor),
+                      children: [
+                        TextSpan(
+                            text:
+                            widget.data['product_sale_price']['value'].toStringAsFixed(2),
+                            //"${2*widget.data['product_sale_price']['value']}".toString(),
+                            style: AppStyles.getMediumTextStyle(
+                                fontSize: 12, color: AppColors.fontColor)),
+                      ],
+                    ),
+                  ),
+              ),
+              Container(
+                padding: const EdgeInsets.only(bottom: 5),
+                // margin: const EdgeInsets.all(10),
+                width: widget.size.width / 3,
+                child: Text.rich(
+                TextSpan(
+                  text: "Qty: ",
+                  style: AppStyles.getMediumTextStyle(
+                      fontSize: 12, color: AppColors.primaryColor),
+                  children: [
+                    TextSpan(
+                        text:
+                        widget.data['quantity_ordered'].toString(),
+                        //"${2*widget.data['product_sale_price']['value']}".toString(),
+                        style: AppStyles.getMediumTextStyle(
+                            fontSize: 12, color: AppColors.fontColor)),
+                  ],
+                ),
+              ),
+              ),
+            ],
+          ),
+          // const SizedBox(width: 5,),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _reOrderButton(),
+            ],
+          )
+        ],
       ),
     );
   }
@@ -392,9 +522,20 @@ class _BuildOrderDetailContainerState extends State<BuildOrderDetailContainer> {
                 ]}),
               child: result!.isLoading
                               ? BuildLoadingWidget(color: AppColors.primaryColor, size: 20)
-                  : Text('Re-Order',
-                  style: AppStyles.getMediumTextStyle(
-                      fontSize: 17, color: AppColors.fadedText)));
+                  : Container(
+                height: 50,
+                width: 80,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(10),
+                  ),
+                  color: AppColors.primaryColor
+                ),
+                    child: Center(
+                      child: Text('Buy it again',
+                      style: AppStyles.getMediumTextStyle(
+                          fontSize: 10, color: AppColors.containerColor)),
+                    ),
+                  ));
         });
   }
 
@@ -436,6 +577,7 @@ class _BuildOrderDetailContainerState extends State<BuildOrderDetailContainer> {
           TextSpan(
               text:
                   widget.data['product_sale_price']['value'].toStringAsFixed(2),
+              //"${2*widget.data['product_sale_price']['value']}".toString(),
               style: AppStyles.getMediumTextStyle(
                   fontSize: 18, color: AppColors.fontColor)),
         ],

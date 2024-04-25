@@ -190,6 +190,7 @@ class _OrdersViewState extends State<OrdersView> {
 
               ListView.builder(
                   shrinkWrap: true,
+                  reverse: true,
                   physics: const ScrollPhysics(),
                   itemCount: result.data!['customer']['orders']['items'].length,
                   itemBuilder: (context, index) {
@@ -215,19 +216,19 @@ class _OrdersViewState extends State<OrdersView> {
                                     borderType: BorderType.RRect,
                                     radius: const Radius.circular(10),
                                     dashPattern: const [5, 5],
-                                    color: AppColors.orderColor,
+                                    color: result.data!['customer']['orders']['items'][index]['status'] == "Delivered" ? AppColors.orderConfirmColor : result.data!['customer']['orders']['items'][index]['status'] == "Pending" ? AppColors.orderPendingColor : AppColors.orderCancelledColor,
                                     strokeWidth: 2,
                                     child: Container(
                                       margin: const EdgeInsets.all(10),
                                       width: 30,
                                       height: 50,
                                       decoration: BoxDecoration(
-                                        color: AppColors.orderColor,
+                                        color: result.data!['customer']['orders']['items'][index]['status'] == "Delivered" ? AppColors.orderConfirmColor : result.data!['customer']['orders']['items'][index]['status'] == "Pending" ? AppColors.orderPendingColor : AppColors.orderCancelledColor,
                                         shape: BoxShape.circle,
                                       ),
                                       child: Icon(
-                                        Icons.done,
-                                        color: AppColors.fontColor,
+                                        result.data!['customer']['orders']['items'][index]['status'] == "Delivered" ? Icons.done : result.data!['customer']['orders']['items'][index]['status'] == "Pending" ? Icons.timelapse_outlined : Icons.cancel_outlined,
+                                        color: AppColors.containerColor,
                                         size: 15,
                                       ),
                                     )),

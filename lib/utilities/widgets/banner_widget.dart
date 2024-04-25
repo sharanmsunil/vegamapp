@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui' as ui;
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -116,20 +117,21 @@ class _BannerBlockState extends State<BannerBlock> {
                               context.push('/${ProductView.route}?$path');
                             },
                             child: SizedBox(
-                              width: e['layout'] != null ? (constraints.maxWidth / 12) * double.parse(e['layout'].toString()) : constraints.maxWidth,
-                              child: IntrinsicHeight(
-                                child: Stack(
-                                  children: [
-                                    CachedNetworkImage(
-                                      imageUrl: e['image'],
-                                      fit: BoxFit.cover,
-                                    ),
-                                    if (widget.maintext != null)
-                                      Center(child: Text(e['title'], textAlign: TextAlign.center, style: AppStyles.getMediumTextStyle(fontSize: 14, color: widget.color))),
-                                  ],
+                                width: e['layout'] != null ? (constraints.maxWidth / 12) * double.parse(e['layout'].toString()) : constraints.maxWidth,
+                                child: IntrinsicHeight(
+                                  child: Stack(
+                                    children: [
+                                      CachedNetworkImage(
+                                        imageUrl: e['image'],
+                                        fit: BoxFit.cover,
+                                      ),
+                                      if (widget.maintext != null)
+                                        Center(child: Text(e['title'], textAlign: TextAlign.center, style: AppStyles.getMediumTextStyle(fontSize: 14, color: widget.color))),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
+
                           ))
                       .toList(),
                 );

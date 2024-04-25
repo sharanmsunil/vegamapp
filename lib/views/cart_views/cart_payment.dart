@@ -20,6 +20,9 @@ import 'package:m2/views/cart_views/payment_complete_view.dart';
 import 'package:provider/provider.dart';
 import 'package:razorpay_web/razorpay_web.dart';
 
+import '../../utilities/widgets/coupon_code_widget.dart';
+import '../../utilities/widgets/proceed_to_checkout_widget.dart';
+
 class CartPayment extends StatefulWidget {
   const CartPayment({super.key});
   static String route = 'payment';
@@ -174,32 +177,63 @@ class _CartPaymentState extends State<CartPayment> {
                   ),
                   builder: (runMutation, mutResult) {
                     return AppResponsive(
-                      mobile: ListView(
-                        controller: scrollController,
-                        padding: EdgeInsets.symmetric(horizontal: constraints.maxWidth > 1400 ? (constraints.maxWidth - 1400) / 2 : 20, vertical: 20),
+                      mobile: Stack(
                         children: [
-                          getBody(size, cartData, refetch),
-                          const SizedBox(height: 20),
-                          CartSummaryWidget(
-                            refetch: refetch,
-                            buttonText: "Place Order",
-                            isLoading: isLoading || mutResult!.isLoading,
-                            onButtonTap: () {
-                              if (!mutResult!.isLoading && !cartData.isLoading) {
-                                if (paymentCode == null) {
-                                  showSnackBar(context: context, message: 'Select a payment method', backgroundColor: Colors.red);
-                                  return;
-                                }
-                                // if (paymentCode == 'braintree') {
-                                //   // brainTreeSetup(token);
-                                //   return;
-                                // }
-                                runMutation({
-                                  'cartId': cartData.cartId,
-                                });
-                              }
-                            },
+                          ListView(
+                            controller: scrollController,
+                            padding: EdgeInsets.symmetric(horizontal: constraints.maxWidth > 1400 ? (constraints.maxWidth - 1400) / 2 : 20, vertical: 20),
+                            children: [
+                              getBody(size, cartData, refetch),
+                              const SizedBox(height: 20),
+                              CouponCodeWidget(
+                                refetch: refetch,
+                                buttonText: "Place Order",
+                                isLoading: isLoading || mutResult!.isLoading,
+                                onButtonTap: () {
+                                  if (!mutResult!.isLoading && !cartData.isLoading) {
+                                    if (paymentCode == null) {
+                                      showSnackBar(context: context, message: 'Select a payment method', backgroundColor: Colors.red);
+                                      return;
+                                    }
+                                    // if (paymentCode == 'braintree') {
+                                    //   // brainTreeSetup(token);
+                                    //   return;
+                                    // }
+                                    runMutation({
+                                      'cartId': cartData.cartId,
+                                    });
+                                  }
+                                },
+                              ),
+                              const SizedBox(height: 120,)
+                            ],
                           ),
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: SizedBox(
+                              height: 120,
+                              child: ProceedToCheckoutWidget(
+                                refetch: refetch,
+                                buttonText: "Place Order",
+                                isLoading: isLoading || mutResult!.isLoading,
+                                onButtonTap: () {
+                                  if (!mutResult!.isLoading && !cartData.isLoading) {
+                                    if (paymentCode == null) {
+                                      showSnackBar(context: context, message: 'Select a payment method', backgroundColor: Colors.red);
+                                      return;
+                                    }
+                                    // if (paymentCode == 'braintree') {
+                                    //   // brainTreeSetup(token);
+                                    //   return;
+                                    // }
+                                    runMutation({
+                                      'cartId': cartData.cartId,
+                                    });
+                                  }
+                                },
+                              ),
+                            ),
+                          )
                         ],
                       ),
                       desktop: SizedBox(

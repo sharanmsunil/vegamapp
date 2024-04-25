@@ -69,8 +69,8 @@ class _ProductViewState extends State<ProductView> {
 
   String? selectedType;
 
-  late SharedPreferences preferences;
-  List<String> recentSearches = [];
+  // late SharedPreferences preferences;
+  // List<String> recentSearches = [];
 
   @override
   void initState() {
@@ -94,15 +94,15 @@ class _ProductViewState extends State<ProductView> {
         fetchMore!(opts!);
       }
     });
-    fetchList();
+    // fetchList();
   }
 
-  fetchList() async {
-    preferences = await SharedPreferences.getInstance();
-    setState(() {
-      recentSearches = preferences.getStringList('recentSearches') ?? [];
-    });
-  }
+  // fetchList() async {
+  //   preferences = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     recentSearches = preferences.getStringList('recentSearches') ?? [];
+  //   });
+  // }
 
   getQueryString() {
     filterKeys.clear();
@@ -368,27 +368,28 @@ class _ProductViewState extends State<ProductView> {
                                                 [0]['categories'],
                                         screenWidth: constraints.maxWidth),
 
-                                recentSearches.isNotEmpty
-                                    ? SizedBox(
-                                        height: 100,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            const SizedBox(height: 5),
-                                            Text(
-                                              "Recent searched products: ",
-                                              style:
-                                                  AppStyles.getMediumTextStyle(
-                                                      fontSize: 16,
-                                                      color:
-                                                          AppColors.fadedText),
-                                            ),
-                                            const Recentsearches(),
-                                            const SizedBox(height: 10),
-                                          ],
-                                        ),
-                                      )
-                                    : const SizedBox(height: 10),
+                                // recentSearches.isNotEmpty
+                                //     ? SizedBox(
+                                //         height: 100,
+                                //         child: Column(
+                                //           crossAxisAlignment: CrossAxisAlignment.start,
+                                //           children: [
+                                //             const SizedBox(height: 5),
+                                //             Text(
+                                //               "Recent searched products: ",
+                                //               style:
+                                //                   AppStyles.getMediumTextStyle(
+                                //                       fontSize: 16,
+                                //                       color:
+                                //                           AppColors.fadedText),
+                                //             ),
+                                //             const Recentsearches(),
+                                //             const SizedBox(height: 10),
+                                //           ],
+                                //         ),
+                                //       )
+                                //     : const SizedBox(height: 10),
+                                const SizedBox(height: 10,),
                                 GridView.builder(
                                   // padding: const EdgeInsets.all(20),
                                   itemCount: productModel.items?.length ??
@@ -538,9 +539,11 @@ class _ProductViewState extends State<ProductView> {
               controller: scrollController ?? _filterScrollController,
               children: [
                 const SizedBox(height: 20),
-                Text('Filters',
-                    style: AppStyles.getRegularTextStyle(
-                        fontSize: 18, color: AppColors.fontColor)),
+                Center(
+                  child: Text('Filters',
+                      style: AppStyles.getRegularTextStyle(
+                          fontSize: 18, color: AppColors.fontColor)),
+                ),
                 const SizedBox(height: 20),
                 // Generates widget accoriding to no of data in products->aggregations
                 Container(
@@ -641,23 +644,26 @@ class _ProductViewState extends State<ProductView> {
                 selectedType = data['attribute_code'];
               }),
           title: Transform.translate(
-            offset: const Offset(-50, 0),
+            offset: const Offset(-20, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.only(bottom: 3),
-                  decoration: BoxDecoration(
-                      border: Border(
-                          bottom: BorderSide(
-                              color: AppColors.primaryColor, width: 2.0))),
-                  child: Text(
-                    data['label'],
-                    style: data['attribute_code'] == selectedType
-                        ? AppStyles.getMediumTextStyle(
-                            fontSize: 14, color: AppColors.fadedText)
-                        : AppStyles.getRegularTextStyle(
-                            fontSize: 14, color: AppColors.fadedText),
+                Center(
+                  child: Container(
+                    padding: const EdgeInsets.only(bottom: 3),
+                    // decoration: BoxDecoration(
+                        // border: Border(
+                        //     bottom: BorderSide(
+                        //         color: AppColors.primaryColor, width: 2.0)),
+                    // ),
+                    child: Text(
+                      data['label'],
+                      style: data['attribute_code'] == selectedType
+                          ? AppStyles.getMediumTextStyle(
+                              fontSize: 14, color: AppColors.fadedText)
+                          : AppStyles.getRegularTextStyle(
+                              fontSize: 14, color: AppColors.fadedText),
+                    ),
                   ),
                 ),
               ],
@@ -746,6 +752,134 @@ class _ProductViewState extends State<ProductView> {
                             style: AppStyles.getRegularTextStyle(fontSize: 12)),
                       ),
           ));
+
+
+      // return ExpansionTile(
+      //     initiallyExpanded: false,
+      //     // tilePadding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+      //     controlAffinity: ListTileControlAffinity.leading,
+      //     leading: const SizedBox(),
+      //     tilePadding: EdgeInsets.zero,
+      //     onExpansionChanged: (value) => setState(() {
+      //       selectedType = data['attribute_code'];
+      //     }),
+      //     title: Transform.translate(
+      //       offset: const Offset(-20, 0),
+      //       child: Column(
+      //         crossAxisAlignment: CrossAxisAlignment.start,
+      //         children: [
+      //           Container(
+      //
+      //             child: Row(
+      //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //               children: [
+      //                 Container(
+      //                   padding: const EdgeInsets.only(bottom: 3),
+      //                   // decoration: BoxDecoration(
+      //                   //     border: Border(
+      //                   //         bottom: BorderSide(
+      //                   //             color: AppColors.primaryColor, width: 2.0))),
+      //                   child: Text(
+      //                     data['label'],
+      //                     style: data['attribute_code'] == selectedType
+      //                         ? AppStyles.getBoldTextStyle(
+      //                         fontSize: 14, color: AppColors.fadedText)
+      //                         : AppStyles.getBoldTextStyle(
+      //                         fontSize: 14, color: AppColors.fadedText),
+      //                   ),
+      //                 ),
+      //                 Text('View All >',style: AppStyles.getLightTextStyle(fontSize: 12,color: AppColors.lessFadedText),)
+      //               ],
+      //             ),
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+      //     // Generate radio buttons from children of the current attribute
+      //     children: List.generate(
+      //       data['options'].length,
+      //           (index) =>
+      //       // If attribute_code != 'category_uid' or 'category_id' show normal radio button
+      //       data['attribute_code'] != 'category_uid' &&
+      //           data['attribute_code'] != 'category_id'
+      //           ? RadioListTile<String>(
+      //         contentPadding: EdgeInsets.zero,
+      //         value: data['options'][index]['value'].toString(),
+      //         groupValue: filterKeys[data['attribute_code']],
+      //         onChanged: (value) {
+      //           filter[data['attribute_code']] = {
+      //             'eq': data['options'][index]['value']
+      //           };
+      //           variables['filter'] = filter;
+      //           filterKeys[data['attribute_code']] =
+      //           data['options'][index]['value'];
+      //
+      //           setState(() {});
+      //         },
+      //         title: Text(data['options'][index]['label'],
+      //             style: AppStyles.getRegularTextStyle(fontSize: 12)),
+      //       )
+      //           :
+      //       // else show special list with check option
+      //       ListTile(
+      //         contentPadding: EdgeInsets.zero,
+      //         leading: SizedBox(
+      //             height: 30,
+      //             width: 30,
+      //             child:
+      //             Image.asset('assets/images/categoryicon.png')),
+      //         trailing: data['options'][index]['value'].toString() ==
+      //             filterKeys[data['attribute_code']]
+      //             ? Icon(Icons.check, color: AppColors.primaryColor)
+      //             : null,
+      //         // value: data['options'][index]['value'].toString(),
+      //         // groupValue: filterKeys[data['attribute_code']],
+      //         onTap: () {
+      //           if (data['attribute_code'] == 'category_uid') {
+      //             if (variables['filter']['category_uid'] != null) {
+      //               variables['filter'].remove('category_uid');
+      //             }
+      //             filter.addAll({
+      //               'category_uid': {
+      //                 'eq': data['options'][index]['value']
+      //               }
+      //             });
+      //             variables['filter'] = filter;
+      //             try {
+      //               variables['filter'].remove("category_id");
+      //             } catch (e) {
+      //               //print(e);
+      //             }
+      //             filterKeys[data['attribute_code']] =
+      //             data['options'][index]['value'];
+      //             //print(variables);
+      //             queryString = ProductApi.products;
+      //           } else {
+      //             if (variables['filter']['category_id'] != null) {
+      //               variables['filter'].remove('category_id');
+      //             }
+      //             filter.addAll({
+      //               'category_id': {
+      //                 'eq': data['options'][index]['value']
+      //               }
+      //             });
+      //             try {
+      //               variables['filter'].remove("category_uid");
+      //             } catch (e) {}
+      //             variables['filter'] = filter;
+      //             filterKeys[data['attribute_code']] =
+      //             data['options'][index]['value'];
+      //             queryString = ProductApi.products;
+      //           }
+      //
+      //           setState(() {});
+      //         },
+      //         title: Text(data['options'][index]['label'],
+      //             style: AppStyles.getRegularTextStyle(fontSize: 12)),
+      //       ),
+      //     ));
+
+
     });
   }
 
@@ -772,17 +906,19 @@ class _ProductViewState extends State<ProductView> {
           const SizedBox(height: 10),
           Container(
             padding: const EdgeInsets.only(bottom: 3),
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom:
-                        BorderSide(color: AppColors.primaryColor, width: 2.0))),
-            child: Text(
-              data['label'],
-              style: data['attribute_code'] == selectedType
-                  ? AppStyles.getMediumTextStyle(
-                      fontSize: 14, color: AppColors.fadedText)
-                  : AppStyles.getRegularTextStyle(
-                      fontSize: 14, color: AppColors.fadedText),
+            // decoration: BoxDecoration(
+            //     border: Border(
+            //         bottom:
+            //             BorderSide(color: AppColors.primaryColor, width: 2.0))),
+            child: Center(
+              child: Text(
+                data['label'],
+                style: data['attribute_code'] == selectedType
+                    ? AppStyles.getMediumTextStyle(
+                        fontSize: 14, color: AppColors.fadedText)
+                    : AppStyles.getRegularTextStyle(
+                        fontSize: 14, color: AppColors.fadedText),
+              ),
             ),
           ),
           RangeSlider(
@@ -810,10 +946,12 @@ class _ProductViewState extends State<ProductView> {
           ),
           const SizedBox(height: 10),
           // show min and max price from the slider
-          Text(
-            'Price: $currency${rangeValues!.start.round()} - $currency${rangeValues!.end.round()}',
-            style:
-                AppStyles.getRegularTextStyle(fontSize: 14, isCurrency: true),
+          Center(
+            child: Text(
+              'Price: $currency${rangeValues!.start.round()} - $currency${rangeValues!.end.round()}',
+              style:
+                  AppStyles.getRegularTextStyle(fontSize: 14, isCurrency: true),
+            ),
           ),
           const SizedBox(height: 10),
         ],

@@ -13,13 +13,16 @@ class AppColors {
   static Color evenFadedText = const Color(0xffc5c5c5); // Even faded text color.
   static Color lessFadedText = const Color(0xff4A4A4A);
   static Color fontColor = Colors.black; // Font color (usually black)
+  static Color greyBgColor = const Color(0xffcecece); // Font color (usually black)
 
   static Color defaultBackground = const Color.fromRGBO(115, 115, 155, 0.15);
 
   static Color fadedContainerColor = const Color(0x14c5c5c5);
   static Color shadowColor = const Color.fromRGBO(0, 0, 0, 0.04);
   static Color containerColor = Colors.white;
-  static Color orderColor = const Color(0xff81fd0c);
+  static Color orderConfirmColor = const Color(0xff81fd0c);
+  static Color orderPendingColor = const Color(0xffff6200);
+  static Color orderCancelledColor = const Color(0xfffd0c0c);
 
   static Color appBarColor = Colors.white;
 
