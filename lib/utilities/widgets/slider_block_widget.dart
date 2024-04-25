@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:m2/services/app_responsive.dart';
 import 'package:m2/utilities/widgets/widgets.dart';

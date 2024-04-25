@@ -15,8 +15,8 @@ import 'package:m2/services/state_management/token/token.dart';
 import 'package:m2/utilities/utilities.dart';
 import 'package:m2/utilities/widgets/widgets.dart';
 
-class CartSummaryWidget extends StatefulWidget {
-  const CartSummaryWidget({
+class CouponCodeWidget extends StatefulWidget {
+  const CouponCodeWidget({
     super.key,
     this.estimatedDelivery,
     this.onButtonTap,
@@ -30,10 +30,10 @@ class CartSummaryWidget extends StatefulWidget {
   final bool isLoading;
   final VoidCallback? refetch;
   @override
-  State<CartSummaryWidget> createState() => _CartSummaryWidgetState();
+  State<CouponCodeWidget> createState() => _CouponCodeWidgetState();
 }
 
-class _CartSummaryWidgetState extends State<CartSummaryWidget> {
+class _CouponCodeWidgetState extends State<CouponCodeWidget> {
   TextEditingController coupon = TextEditingController();
   bool isAppliedCoupon = false;
   var f = NumberFormat("#,##,##,##0.00", "en_IN");
@@ -77,7 +77,7 @@ class _CartSummaryWidgetState extends State<CartSummaryWidget> {
         constraints: const BoxConstraints(maxWidth: 500),
         padding: EdgeInsets.all(size.width * 0.05 > 40 ? 40 : size.width * 0.05),
         decoration: BoxDecoration(
-          color: AppColors.dividerColor,
+          // color: AppColors.dividerColor,
           borderRadius: BorderRadius.circular(18.0),
         ),
         child: Column(
@@ -198,57 +198,8 @@ class _CartSummaryWidgetState extends State<CartSummaryWidget> {
                 ],
               ),
             ),
-            const SizedBox(height: 10),
-            Divider(color: AppColors.fadedText, height: 1),
-            const SizedBox(height: 10),
-            Wrap(
-              alignment: WrapAlignment.spaceBetween,
-              runAlignment: WrapAlignment.spaceBetween,
-              spacing: 20,
-              runSpacing: 20,
-              children: [
-                Text('Order Total', style: AppStyles.getSemiBoldTextStyle(fontSize: 12, color: AppColors.fontColor)),
-                Text.rich(
-                  TextSpan(
-                    children: [
-                      if (cart.cartData['cart']['prices']['grand_total']['currency'] != null)
-                        TextSpan(
-                            text: '${cart.cartData['cart']['prices']['grand_total']['currency']} ',
-                            style: AppStyles.getSemiBoldTextStyle(fontSize: 12, color: AppColors.fontColor)),
-                      TextSpan(
-                          text: f.format(cart.cartData['cart']['prices']['grand_total']['value']), style: AppStyles.getMediumTextStyle(fontSize: 12, color: AppColors.fontColor))
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            TextButton(
-              // style: TextButton.styleFrom(
-              //   fixedSize: Size(size.width * 0.8, size.width * 0.125),
-              //   maximumSize: Size(250, 50),
-              //   shape: StadiumBorder(side: BorderSide(width: 2, color: AppColors.buttonColor)),
-              //   shadowColor: AppColors.shadowColor,
-              // ),
-              style: ButtonStyle(
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(side: BorderSide(width: 2, color: AppColors.buttonColor),borderRadius: BorderRadius.circular(5))),
-                shadowColor: MaterialStateProperty.all(AppColors.shadowColor),
-                backgroundColor: MaterialStateProperty.resolveWith(getButtonColor),
-                foregroundColor: MaterialStateProperty.resolveWith(getTextColor),
-                padding: MaterialStateProperty.all(const EdgeInsets.all(15)),
-              ),
-              statesController: buttonStateController,
-              onPressed: widget.onButtonTap,
-              child: widget.isLoading
-                  ? const BuildLoadingWidget()
-                  : Text(
-                      widget.buttonText,
-                      style: AppStyles.getRegularTextStyle(
-                        fontSize: 12,
-                      ),
-                    ),
-            ),
-            // const SizedBox(height: 40),
+            const SizedBox(height: 20),
+
           ],
         ),
       );

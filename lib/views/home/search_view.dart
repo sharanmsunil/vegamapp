@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart%20';
 import 'package:go_router/go_router.dart';
@@ -6,10 +7,10 @@ import 'package:m2/services/api_services/api_services.dart';
 import 'package:m2/services/api_services/suggested_product_api.dart';
 import 'package:m2/services/search_services.dart';
 import 'package:m2/utilities/utilities.dart';
+import 'package:m2/utilities/widgets/products_may_like_widget.dart';
 import 'package:m2/utilities/widgets/widgets.dart';
 
 import 'package:m2/views/product_views/product_view.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/models/product_model.dart';
 import '../../utilities/widgets/search/popular_item.dart';
@@ -31,24 +32,24 @@ class _SearchViewState extends State<SearchView> {
   TextEditingController searchQuery = TextEditingController();
   List<dynamic> suggestedProducts = [];
   bool _isloading = false;
-  late SharedPreferences preferences;
-  List<String> recentSearches = [];
+  // late SharedPreferences preferences;
+  // List<String> recentSearches = [];
 
   @override
   void initState() {
     setState(() {
       fetchProducts();
-      fetchList();
+      // fetchList();
     });
     super.initState();
   }
 
-  fetchList() async {
-    preferences = await SharedPreferences.getInstance();
-    setState(() {
-      recentSearches = preferences.getStringList('recentSearches') ?? [];
-    });
-  }
+  // fetchList() async {
+  //   preferences = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     recentSearches = preferences.getStringList('recentSearches') ?? [];
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -90,13 +91,14 @@ class _SearchViewState extends State<SearchView> {
                     padding: const EdgeInsets.only(right: 10),
                     child: IconButton(
                       splashRadius: 25,
-                      onPressed: () async {
-                        preferences = await SharedPreferences.getInstance();
-                        setState(() {
-                          recentSearches.add(searchQuery.text);
-                          preferences.setStringList(
-                              'recentSearches', recentSearches);
-                        });
+                      onPressed: () {
+                      // async {
+                        // preferences = await SharedPreferences.getInstance();
+                        // setState(() {
+                        //   recentSearches.add(searchQuery.text);
+                        //   preferences.setStringList(
+                        //       'recentSearches', recentSearches);
+                        // });
                         context.push(Uri(
                                 path: '/${ProductView.route}',
                                 queryParameters: {"search": searchQuery.text})
@@ -126,30 +128,10 @@ class _SearchViewState extends State<SearchView> {
                 vertical: 20,
               ),
               child: TwoColoredTitle(
-                  title: "Products You May also Like",
+                  title: "Products you might also like",
                   firstHeadColor: AppColors.primaryColor,
                   secondHeadColor: Colors.black),
             ),
-            // Obx(() {
-            //   if (productController.isLoading.value) {
-            //     return Center(
-            //         child: CircularProgressIndicator(color: AppColors.primaryColor,strokeWidth: 4,));
-            //   } else {
-            //     return GridView.builder(
-            //       shrinkWrap: true,
-            //         physics: NeverScrollableScrollPhysics(),
-            //         itemCount: productController.productList.length,
-            //         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            //             crossAxisCount: 2,
-            //             crossAxisSpacing: 5,
-            //             mainAxisSpacing: 20,
-            //             childAspectRatio: MediaQuery.of(context).size.width /
-            //                 (MediaQuery.of(context).size.height / 2.5)),
-            //         itemBuilder: (context, index) {
-            //           return ProductTile(productController.productList[index],);
-            //         });
-            //   }
-            // })
             _isloading
                 ? const CircularProgressIndicator()
                 : suggestedProducts.isEmpty
@@ -160,81 +142,7 @@ class _SearchViewState extends State<SearchView> {
                           color: Colors.red,
                         ),
                       )
-                    : Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: suggestedProducts.length,
-                            itemBuilder: (context, index) {
-                              var productModel =
-                                  Items.fromJson(suggestedProducts[index]);
-                              // var cartModel = Items.fromJson(cartProducts[index]);
-                              return InkWell(
-                                onTap: () => context.push(
-                                    '/${ProductView.route}/${productModel.urlKey}.${productModel.urlSuffix}'),
-                                child: Card(
-                                  elevation: 2,
-                                  color: AppColors.appBarColor,
-                                  child: ListTile(
-                                    leading: Container(
-                                      height: 100,
-                                      width: 50,
-                                      decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              image: NetworkImage(
-                                                  suggestedProducts[index]
-                                                      ['image']['url']),
-                                              fit: BoxFit.contain)),
-                                    ),
-                                    // Image(
-                                    //   image: NetworkImage(suggestedProducts[index]['image']['url']),fit: BoxFit.contain,),
-                                    title: Text(
-                                      suggestedProducts[index]['name'],
-                                      style: AppStyles.getRegularTextStyle(
-                                          fontSize: 15,
-                                          color: AppColors.fadedText),
-                                    ),
-                                    // subtitle: Text(characters[index]['countries'][index]['code']),
-                                    subtitle: Text(
-                                      "${suggestedProducts[index]['price_range']['minimum_price']['regular_price']['currency']} ${suggestedProducts[index]['price_range']['minimum_price']['regular_price']['value'].toString()}",
-                                      style: AppStyles.getLightTextStyle(
-                                          fontSize: 12,
-                                          color: AppColors.fontColor),
-                                    ),
-                                    trailing: Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: SizedBox(
-                                        width: 100,
-                                        height: 100,
-                                        child: BuildButtonSingle(
-                                          typeName: productModel.sTypename!,
-                                          width: 400,
-                                          title: 'ADD TO CART',
-                                          buttonColor: AppColors.buttonColor,
-                                          textColor: Colors.white,
-                                          svg: 'assets/svg/shopping-cart.svg',
-                                          parentSku: productModel.sku!,
-                                          selectedSku: productModel
-                                              .variants?[0].product?.sku!,
-                                          quantity: 1,
-                                        ),
-                                      ),
-                                      // Container(
-                                      //   width: 100,
-                                      //   height: 100,
-                                      //   decoration: BoxDecoration(
-                                      //     color: AppColors.buttonColor,
-                                      //     borderRadius: BorderRadius.all(Radius.circular(5))
-                                      //   ),
-                                      //   child: Center(child: Text("ADD TO CART",style: AppStyles.getMediumTextStyle(fontSize: 10,color: Colors.white),)),
-                                      // ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }),
-                      ),
+                    : ProductsYouMayLikeWidget(suggestedProducts: suggestedProducts),
           ],
         ),
       ),

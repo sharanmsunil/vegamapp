@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:m2/utilities/app_colors.dart';
 
 import '../../../views/product_views/product_view.dart';
 
@@ -36,15 +37,22 @@ class PopularItem extends StatelessWidget {
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: ElevatedButton(
-                onPressed: () {
-                  context.push(Uri(
-                      path: '/${ProductView.route}',
-                      queryParameters: {"search": popularItem[index]})
-                      .toString());
-                },
+            child: InkWell(
+              onTap: (){
+                context.push(Uri(
+                    path: '/${ProductView.route}',
+                    queryParameters: {"search": popularItem[index]})
+                    .toString());
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(12)),
+                  color: AppColors.containerColor,
+                  border: Border.all(color: AppColors.greyBgColor)
+                ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Icon(Icons.history),
                     const SizedBox(
@@ -52,7 +60,9 @@ class PopularItem extends StatelessWidget {
                     ),
                     Text(popularItem[index]),
                   ],
-                )),
+                ),
+              ),
+            ),
           );
         },
       ),
