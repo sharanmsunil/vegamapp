@@ -7,7 +7,7 @@ import 'package:m2/utilities/utilities.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:gql/ast.dart';
 
-String logoUrl = 'assets/images/logo.png';
+String logoUrl = 'assets/images/moolans.png';
 String currency = '\$';
 
 enum Gender { male, female }

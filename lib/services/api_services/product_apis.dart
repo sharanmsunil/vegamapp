@@ -373,6 +373,9 @@ mutation createProductReview($name:String!, $sku: String!, $summary: String!, $t
   }
   ''';
 
+
+
+
   static String removeProductsFromWishlist = r'''
   mutation removeProductsFromWishlist($wishlistId: ID!,$wishlistItemsIds: [ID!]!){
     removeProductsFromWishlist(wishlistId: $wishlistId, wishlistItemsIds: $wishlistItemsIds) {
