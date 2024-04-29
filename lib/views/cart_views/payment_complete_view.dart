@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:m2/utilities/utilities.dart';
 import 'package:m2/utilities/widgets/scaffold_body.dart';
+import 'package:provider/provider.dart';
+
+import '../../services/state_management/token/token.dart';
+import '../account_view/orders_view.dart';
+import '../auth/auth.dart';
+import '../home/search_view.dart';
+import 'cart_view.dart';
 
 class OrderPlacedView extends StatefulWidget {
   const OrderPlacedView({super.key, this.orderId});
@@ -45,7 +53,61 @@ class _OrderPlacedViewState extends State<OrderPlacedView> {
             )
           ],
         ),
+        const SizedBox(height: 50,),
+        InkWell(
+          onTap: (){
+        navigate(0, context);
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            margin: const EdgeInsets.symmetric(horizontal: 100),
+            height: 50,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(12)),
+              color: AppColors.primaryColor
+            ),
+            child: Center(child: Text('Shop More',style: AppStyles.getRegularTextStyle(fontSize: 14,color: AppColors.containerColor),)),
+          ),
+        ),
+        const SizedBox(height: 20,),
+        InkWell(
+          onTap: (){
+            context.push("/account/${OrdersView.route}");
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            margin: const EdgeInsets.symmetric(horizontal: 100),
+            height: 50,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(12)),
+              border: Border.all(color: AppColors.primaryColor,width: 1),
+              color: AppColors.containerColor
+            ),
+            child: Center(child: Text('View Orders',style: AppStyles.getRegularTextStyle(fontSize: 14,color: AppColors.primaryColor),)),
+          ),
+        ),
       ],
     ));
   }
+
+    navigate(int index, BuildContext context) {
+    switch (index) {
+    case 0:
+    return context.push("/");
+    case 1:
+    return context.push('/${SearchView.route}');
+    case 2:
+    return context.push("/${CartView.route}");
+    case 3:
+    final authToken = Provider.of<AuthToken>(context, listen: false);
+    if (authToken.loginToken == null) {
+    return context.push('/${Auth.route}');
+    } else {
+    return context.push('/account');
+    }
+
+    default:
+    break;
+    }
+    }
 }
