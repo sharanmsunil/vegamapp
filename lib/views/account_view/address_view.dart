@@ -3,6 +3,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:m2/services/api_services/api_services.dart';
 import 'package:m2/services/api_services/customer_apis.dart';
@@ -26,6 +28,7 @@ class AddressViewState extends State<AddressView> {
   final ScrollController scrollController = ScrollController();
   bool regAsUser = false;
   late UserData userData;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -179,6 +182,40 @@ class AddressViewState extends State<AddressView> {
       "id": addressModel?.region?.regionId ?? 502,
       "__typename": "CustomerAddressRegion"
     };
+
+    Position? position;
+    List<Placemark>? placeMarks;
+
+    getCurrentLocation() async{
+      Position newPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      position = newPosition;
+      placeMarks = await placemarkFromCoordinates(
+          position!.latitude,
+          position!.longitude);
+
+      Placemark pMark = placeMarks![0];
+
+      // String completeAddress = '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.subLocality} ${pMark.locality}, ${pMark.subAdministrativeArea}, ${pMark.administrativeArea} ${pMark.postalCode}, ${pMark.country}';
+      //
+      // print(completeAddress);
+      // fName.text = completeAddress;
+
+      String aptNo = '${pMark.subThoroughfare}';
+      String streetName = '${pMark.thoroughfare}';
+      String cityName = '${pMark.subLocality}, ${pMark.locality}';
+      String pinNo = '${pMark.postalCode}';
+      // String stateName = '${pMark.administrativeArea}';
+      // String countryName = '${pMark.country}';
+
+      appartNo.text = aptNo;
+      street.text = streetName;
+      city.text = cityName;
+      pin.text = pinNo;
+      // state.text = stateName;
+      // country.text = countryName;
+    }
 
     return showDialog(
       context: context,
@@ -412,6 +449,30 @@ class AddressViewState extends State<AddressView> {
                           );
                         },
                       ),
+                    const SizedBox(height: 10),
+                    InkWell(
+                      onTap: (){
+                        getCurrentLocation();
+
+                      },
+                      child: Container(
+                        height: 30,
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        margin: const EdgeInsets.symmetric(horizontal: 30),
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(Radius.circular(6)),
+                          color: AppColors.primaryColor
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.location_searching_outlined,color: AppColors.containerColor,size: 12,),
+                            Text("Get my Current Location",style: AppStyles.getRegularTextStyle(fontSize: 10,color: AppColors.containerColor),)
+                          ],
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 10),
                     CheckboxListTile.adaptive(
                       controlAffinity: ListTileControlAffinity.leading,

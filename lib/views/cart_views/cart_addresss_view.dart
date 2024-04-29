@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:m2/services/api_services/api_services.dart';
@@ -453,6 +455,30 @@ class _CartAddressViewState extends State<CartAddressView> {
               },
             ),
           const SizedBox(height: 20),
+          InkWell(
+            onTap: (){
+              getCurrentLocation();
+
+            },
+            child: Container(
+              height: 50,
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              margin: const EdgeInsets.symmetric(horizontal: 50),
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(6)),
+                  color: AppColors.primaryColor
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.location_searching_outlined,color: AppColors.containerColor,size: 15,),
+                  Text("Get my Current Location",style: AppStyles.getRegularTextStyle(fontSize: 12,color: AppColors.containerColor),)
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
           if (authToken.loginToken != null)
             ListTile(
               contentPadding: EdgeInsets.zero,
@@ -816,5 +842,36 @@ class _CartAddressViewState extends State<CartAddressView> {
     }
 
     return region;
+  }
+
+  Position? position;
+  List<Placemark>? placeMarks;
+
+  getCurrentLocation() async{
+    Position newPosition = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    position = newPosition;
+    placeMarks = await placemarkFromCoordinates(
+        position!.latitude,
+        position!.longitude);
+
+    Placemark pMark = placeMarks![0];
+
+    String completeAddress = '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.subLocality} ${pMark.locality}, ${pMark.subAdministrativeArea}, ${pMark.administrativeArea} ${pMark.postalCode}, ${pMark.country}';
+    String aptNo = '${pMark.subThoroughfare}';
+    String streetName = '${pMark.thoroughfare}';
+    String cityName = '${pMark.subLocality}, ${pMark.locality}';
+    String pinNo = '${pMark.postalCode}';
+    // String stateName = '${pMark.administrativeArea}';
+    // String countryName = '${pMark.country}';
+
+    appartNo.text = aptNo;
+    street.text = streetName;
+    address.text = completeAddress;
+    city.text = cityName;
+    pin.text = pinNo;
+    // state.text = stateName;
+    // country.text = countryName;
   }
 }
