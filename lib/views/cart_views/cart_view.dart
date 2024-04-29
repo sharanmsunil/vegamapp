@@ -129,11 +129,6 @@ class _CartViewState extends State<CartView> {
                         : "An error occured",
                   ),
                 );
-                // functionOnException(refetch);
-                // return BuildErrorWidget(
-                //   errorMsg: result.exception?.graphqlErrors[0].message,
-                //   onRefresh: refetch,
-                // );
               }
               cartData.setCartData(result.data!);
               cartData.putCartCount(result.data!['cart']['total_quantity']);
@@ -150,21 +145,6 @@ class _CartViewState extends State<CartView> {
                         vertical: 20),
                     children: [
                       const SizedBox(height: 20),
-                      // Align(
-                      //   alignment: Alignment.centerLeft,
-                      //   child: Container(
-                      //     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      //     width: AppResponsive.isDesktop(context) ? constraints.maxWidth - 410 : constraints.maxWidth,
-                      //     decoration: AppResponsive.isDesktop(context)
-                      //         ? BoxDecoration(
-                      //             color: AppColors.shadowColor,
-                      //             borderRadius: BorderRadius.circular(30),
-                      //           )
-                      //         : null,
-                      //     child: const BuildCartSteps(currentCartIndex: 0),
-                      //   ),
-                      // ),
-                      // const SizedBox(height: 20),
                       result.data!['cart']['total_quantity'] == 0
                           ? Column(
                               children: [
@@ -587,91 +567,6 @@ class _CartViewState extends State<CartView> {
             var item = result.data!['cart']['items'][index];
             var value = item['product']['name'];
             return
-                //   Stack(
-                //   children: [
-                //     Column(
-                //       children: [
-                //         SizedBox(height: 100, child: CachedNetworkImage(imageUrl: item['product']['image']['url'])),
-                //         const SizedBox(height: 15),
-                //         Text(item['product']['name'], style: AppStyles.getMediumTextStyle(fontSize: 15, color: AppColors.fontColor)),
-                //         const SizedBox(height: 10),
-                //         BuildPriceWithOffer(
-                //           price: f.format(item['product']['special_price'] ?? item['product']['price_range']['minimum_price']['regular_price']['value']),
-                //           originalPrice: item['product']['price_range']['maximum_price']['regular_price']['value'].toString(),
-                //           offer: item['product']['price_range']['maximum_price']['discount']['percent_off'] * 1.0,
-                //           priceSize: 17,
-                //           currency: item['product']['price_range']['minimum_price']['regular_price']['currency'],
-                //         ),
-                //         const SizedBox(height: 10),
-                //         getItemNoChanger(size: size, item: item, cartData: cartData, refetch: refetch),
-                //       ],
-                //     ),
-                //     Align(
-                //       alignment: Alignment.topRight,
-                //       child: Mutation(
-                //           options: MutationOptions(
-                //             document: gql(CartApis.removeProductsFromCart),
-                //             onCompleted: (data) async {
-                //               print(data); // cartData.checkVirtualCart();
-                //               showSnackBar(
-                //                   context: context,
-                //                   message: "Removed item from cart",
-                //                   backgroundColor: AppColors.snackbarSuccessBackgroundColor,
-                //                   textColor: AppColors.snackbarSuccessTextColor);
-                //               // await cartData.getCartData(context, Provider.of<AuthToken>(context, listen: false));
-                //               refetch!();
-                //             },
-                //             onError: (error) {
-                //               showSnackBar(
-                //                 context: context,
-                //                 message: error!.graphqlErrors[0].message,
-                //                 backgroundColor: AppColors.snackbarErrorBackgroundColor,
-                //                 textColor: AppColors.snackbarErrorTextColor,
-                //               );
-                //
-                //               print(error);
-                //             },
-                //           ),
-                //           builder: (runMutation, result) {
-                //             return IconButton(
-                //               onPressed: () {
-                //                 showDialog(
-                //                   context: context,
-                //                   builder: (context) => AlertDialog(
-                //                     title: Text("Delete?", style: AppStyles.getMediumTextStyle(fontSize: 16)),
-                //                     content: Text(
-                //                       "Are you sure you want to delete this item from cart?",
-                //                       style: AppStyles.getRegularTextStyle(fontSize: 14),
-                //                     ),
-                //                     actions: [
-                //                       TextButton(
-                //                         onPressed: () => Navigator.pop(context),
-                //                         child: Text(
-                //                           'Cancel',
-                //                           style: AppStyles.getMediumTextStyle(fontSize: 14),
-                //                         ),
-                //                       ),
-                //                       TextButton(
-                //                         onPressed: () {
-                //                           //print(item);
-                //                           Navigator.pop(context);
-                //                           runMutation({'cartId': cartData.cartId, 'itemId': item['id']});
-                //                         },
-                //                         child: Text(
-                //                           'OK',
-                //                           style: AppStyles.getMediumTextStyle(fontSize: 14),
-                //                         ),
-                //                       ),
-                //                     ],
-                //                   ),
-                //                 );
-                //               },
-                //               icon: Icon(Icons.delete_outline, color: AppColors.primaryColor),
-                //             );
-                //           }),
-                //     ),
-                //   ],
-                // );
                 ///
                 Mutation(
               options: MutationOptions(
@@ -704,40 +599,6 @@ class _CartViewState extends State<CartView> {
                       onPressed: (context) {
                         runMutation(
                             {'cartId': cartData.cartId, 'itemId': item['id']});
-                        // showDialog(
-                        //   context: context,
-                        //   builder: (context) => AlertDialog(
-                        //     title: Text("Delete?",
-                        //         style: AppStyles.getMediumTextStyle(fontSize: 16)),
-                        //     content: Text(
-                        //       "Are you sure you want to delete this item from cart?",
-                        //       style: AppStyles.getRegularTextStyle(fontSize: 14),
-                        //     ),
-                        //     actions: [
-                        //       TextButton(
-                        //         onPressed: () => Navigator.pop(context),
-                        //         child: Text(
-                        //           'Cancel',
-                        //           style: AppStyles.getMediumTextStyle(fontSize: 14),
-                        //         ),
-                        //       ),
-                        //       TextButton(
-                        //         onPressed: () {
-                        //           //print(item);
-                        //           Navigator.pop(context);
-                        //           runMutation({
-                        //             'cartId': cartData.cartId,
-                        //             'itemId': item['id']
-                        //           });
-                        //         },
-                        //         child: Text(
-                        //           'OK',
-                        //           style: AppStyles.getMediumTextStyle(fontSize: 14),
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // );
                       },
                       backgroundColor: AppColors.orderCancelledColor,
                       icon: Icons.delete,
