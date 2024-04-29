@@ -187,6 +187,21 @@ class AddressViewState extends State<AddressView> {
     List<Placemark>? placeMarks;
 
     getCurrentLocation() async{
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if(!serviceEnabled){
+        return Future.error('Location services are disabled,');
+      }
+      LocationPermission permission = await Geolocator.checkPermission();
+      if(permission == LocationPermission.denied){
+        permission = await Geolocator.requestPermission();
+        if(permission == LocationPermission.denied){
+          return Future.error('Location permissions are denied');
+        }
+      }
+      if(permission == LocationPermission.deniedForever){
+        return Future.error('Location permissions are permanently denied');
+      }
+      
       Position newPosition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
@@ -406,10 +421,10 @@ class AddressViewState extends State<AddressView> {
                                                   child: ListView.separated(
                                                     // shrinkWrap: true,
                                                     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                                                    itemCount: getCountryList(countries, countrySearch.text).length,
+                                                    itemCount: getRegionList(regions,countrySearch.text).length,
                                                     separatorBuilder: (context, index) => const SizedBox(height: 20),
                                                     itemBuilder: (context, index) {
-                                                      List countriesList = getCountryList(countries, countrySearch.text);
+                                                      List countriesList = getRegionList(regions, countrySearch.text);
                                                       return InkWell(
                                                         onTap: () {
                                                           FocusManager.instance.primaryFocus?.unfocus();
