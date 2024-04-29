@@ -256,7 +256,7 @@ class _CartAddressViewState extends State<CartAddressView> {
           const SizedBox(height: 20),
           BuildTextField(
             controller: address,
-            hint: 'Adrress',
+            hint: 'Address',
             maxLines: authToken.loginToken != null ? 10 : 7,
             padding: const EdgeInsets.all(20),
           ),
@@ -848,6 +848,22 @@ class _CartAddressViewState extends State<CartAddressView> {
   List<Placemark>? placeMarks;
 
   getCurrentLocation() async{
+
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if(!serviceEnabled){
+      return Future.error('Location services are disabled,');
+    }
+    LocationPermission permission = await Geolocator.checkPermission();
+    if(permission == LocationPermission.denied){
+      permission = await Geolocator.requestPermission();
+      if(permission == LocationPermission.denied){
+        return Future.error('Location permissions are denied');
+      }
+    }
+    if(permission == LocationPermission.deniedForever){
+      return Future.error('Location permissions are permanently denied');
+    }
+
     Position newPosition = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
