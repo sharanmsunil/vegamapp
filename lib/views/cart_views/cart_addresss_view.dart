@@ -659,6 +659,12 @@ class _CartAddressViewState extends State<CartAddressView> {
                               final offset = node!.getTransformTo(null).getTranslation().y;
                               //print(offset);
                               // listScrollController.animateTo(-offset, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+                              showSnackBar(
+                                  context: context,
+                                  message: 'Fill empty fields',
+                                  backgroundColor: AppColors.snackbarErrorBackgroundColor,
+                                  textColor: AppColors.snackbarErrorTextColor
+                              );
                             }
                           },
                           style: TextButton.styleFrom(
