@@ -241,7 +241,7 @@ class AddressViewState extends State<AddressView> {
           return Dialog(
             backgroundColor: Colors.transparent,
             child: Container(
-              constraints: BoxConstraints(maxWidth: 500, maxHeight: size.height * 0.8),
+              constraints: BoxConstraints(maxWidth: 500, maxHeight: size.height * 0.67),
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: AppColors.scaffoldColor),
               child: Form(
                 key: formKey,
@@ -592,6 +592,13 @@ class AddressViewState extends State<AddressView> {
                                 } else {
                                   runMutation(addressMap);
                                 }
+                              } else{
+                                showSnackBar(
+                                    context: context,
+                                    message: 'Fill empty fields',
+                                    backgroundColor: AppColors.snackbarErrorBackgroundColor,
+                                    textColor: AppColors.snackbarErrorTextColor
+                                );
                               }
                             },
                             child: Text(

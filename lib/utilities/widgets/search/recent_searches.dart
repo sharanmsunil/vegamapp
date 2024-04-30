@@ -5,16 +5,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../views/product_views/product_view.dart';
 
-class Recentsearches extends StatefulWidget {
-  const Recentsearches({super.key});
+class RecentSearches extends StatefulWidget {
+  const RecentSearches({super.key,
+    required this.recentSearched
+  });
+  final String? recentSearched;
 
   @override
-  State<Recentsearches> createState() => _RecentsearchesState();
+  State<RecentSearches> createState() => _RecentSearchesState();
 }
 
-class _RecentsearchesState extends State<Recentsearches> {
-  late SharedPreferences preferences;
+class _RecentSearchesState extends State<RecentSearches> {
   List<String> recentSearches = [];
+  late SharedPreferences preferences;
+  String? recentProduct;
 
   @override
   void initState() {
@@ -22,16 +26,37 @@ class _RecentsearchesState extends State<Recentsearches> {
     super.initState();
   }
 
-  fetchList() async {
+  Future <void> fetchList () async{
     preferences = await SharedPreferences.getInstance();
-    setState(() {
+    setState(()  {
       recentSearches = preferences.getStringList('recentSearches') ?? [];
-      for (int i = 0; recentSearches.length > 4;) {
-        recentSearches.removeAt(i);
+      if(recentSearches.length > 4){
+         preferences.remove('recentSearches');
+        for( int i=0; recentSearches.length > 4;){
+          recentSearches.removeAt(i);
+        }
+        preferences.setStringList('recentSearches', recentSearches);
       }
-      // print(recentSearches);
     });
   }
+
+  // Future<void> fetchList()  async{
+  //   preferences = await SharedPreferences.getInstance();
+  //   setState(() async {
+  //     // preferences.setStringList('recentSearches', widget.recentSearched!);
+  //     recentSearches = preferences.getStringList('recentSearches') ?? [];
+  //     recentSearches.add(widget.recentSearched!);
+  //     for (int i = 0; recentSearches.length > 4;) {
+  //       // isTrue = true;
+  //       // await preferences.remove('recentSearches');
+  //       recentSearches.removeAt(i);
+  //     }
+  //     // if(isTrue == true){
+  //     //     preferences.setStringList('recentSearches', recentSearches);
+  //     //   isTrue = false;
+  //     // }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +65,8 @@ class _RecentsearchesState extends State<Recentsearches> {
       width: double.infinity,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
+          // physics: const NeverScrollableScrollPhysics(),
+          // reverse: true,
           shrinkWrap: true,
           itemCount: recentSearches.length,
           itemBuilder: (context, index) {
@@ -68,7 +95,7 @@ class _RecentsearchesState extends State<Recentsearches> {
                               : recentSearches[index]),
                           labelStyle: AppStyles.getMediumTextStyle(
                               fontSize: 16, color: AppColors.buttonColor),
-                          backgroundColor: Colors.white,
+                          backgroundColor: AppColors.containerColor,
                           // avatar: _isSelected ? Icon(Icons.check, color: Colors.white) : null,
                           // avatar: const CircleAvatar(
                           //   child: Center(child: Icon(Icons.history)),

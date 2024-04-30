@@ -516,10 +516,19 @@ class _BuildOrderDetailContainerState extends State<BuildOrderDetailContainer> {
         ),
         builder: (runMutation, result) {
           return InkWell(
-              onTap: () => runMutation({'cartIdString': cartData.cartId,
-                'cartItemsMap': [
-                  {'quantity': 1, 'sku': widget.data['product_sku']}
-                ]}),
+              onTap: () {
+                runMutation({'cartIdString': cartData.cartId,
+                  'cartItemsMap': [
+                    {'quantity': 1, 'sku': widget.data['product_sku']}
+                  ]});
+                showSnackBar(
+                  backgroundColor: AppColors.snackbarSuccessBackgroundColor,
+                  textColor: AppColors.snackbarSuccessTextColor,
+                  context: context,
+                  message: "Added to cart",
+                );
+
+              } ,
               child: result!.isLoading
                               ? BuildLoadingWidget(color: AppColors.primaryColor, size: 20)
                   : Container(

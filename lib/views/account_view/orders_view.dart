@@ -389,10 +389,18 @@ class _OrdersViewState extends State<OrdersView> {
                                   ),
                                   builder: (runMutation, result1) {
                                     return InkWell(
-                                      onTap: () => runMutation({
-                                        'orderNo': result.data!['customer']
-                                            ['orders']['items'][index]['number']
-                                      }),
+                                      onTap: () {
+                                        runMutation({
+                                          'orderNo': result.data!['customer']
+                                          ['orders']['items'][index]['number']
+                                        });
+                                        showSnackBar(
+                                          backgroundColor: AppColors.snackbarSuccessBackgroundColor,
+                                          textColor: AppColors.snackbarSuccessTextColor,
+                                          context: context,
+                                          message: "Added to cart",
+                                        );
+                                      },
                                       child: Container(
                                         decoration: BoxDecoration(
                                             color: AppColors.buttonTextColor,
