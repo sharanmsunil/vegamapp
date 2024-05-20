@@ -109,7 +109,7 @@ class Items {
   String? sku;
   String? urlKey;
   String? urlSuffix;
-  Image? image;
+  Images? image;
   int? ratingSummary;
   int? reviewCount;
   String? stockStatus;
@@ -152,7 +152,7 @@ class Items {
     sku = json['sku'];
     urlKey = json['url_key'];
     urlSuffix = json['url_suffix'];
-    image = json['image'] != null ? Image.fromJson(json['image']) : null;
+    image = json['image'] != null ? Images.fromJson(json['image']) : null;
     ratingSummary = json['rating_summary'];
     reviewCount = json['review_count'];
     stockStatus = json['stock_status'];
@@ -236,13 +236,13 @@ class Items {
   }
 }
 
-class Image {
+class Images {
   String? sTypename;
   String? url;
 
-  Image({this.sTypename, this.url});
+  Images({this.sTypename, this.url});
 
-  Image.fromJson(Map<String, dynamic> json) {
+  Images.fromJson(Map<String, dynamic> json) {
     sTypename = json['__typename'];
     url = json['url'];
   }

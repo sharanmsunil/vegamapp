@@ -100,7 +100,7 @@ class _ProductVarientWidgetState extends State<ProductVarientWidget> {
                 borderRadius: BorderRadius.circular(40), radius: 40,
                 onTap: () {
                   // print(jsonEncode(widget.productModel.items![0].configurableOptions![i].toJson()));
-                  print(widget.productModel.items![0].configurableOptions![i].values![index].swatchData);
+                  // print(widget.productModel.items![0].configurableOptions![i].values![index].swatchData);
                   setState(() => varientData[i] = widget.productModel.items![0].configurableOptions![i].values![index].uid!);
 
                   setSku();
@@ -227,7 +227,7 @@ class _ProductVarientWidgetState extends State<ProductVarientWidget> {
     // print(jsonEncode(widget.productModel.items![0].variants!.map((e) => e.toJson()).toList()));
     // List<Map<String, dynamic>> varients = List<Map<String, dynamic>>.from(productData['variants']);
     //
-    print(varientData);
+    // print(varientData);
     for (var element in widget.productModel.items![0].variants!) {
       bool broken = false;
       for (int i = 0; i < varientData.length; i++) {
@@ -237,10 +237,10 @@ class _ProductVarientWidgetState extends State<ProductVarientWidget> {
         }
       }
       if (broken) {
-        print("broken");
+        // print("broken");
         continue;
       }
-      print("Not broken");
+      // print("Not broken");
       selectedSku = element.product!.sku;
       List<Map<String, dynamic>>? mediaGallery =
           element.product!.mediaGallery != null && element.product!.mediaGallery!.isNotEmpty ? List<Map<String, dynamic>>.from(element.product!.mediaGallery!) : null;

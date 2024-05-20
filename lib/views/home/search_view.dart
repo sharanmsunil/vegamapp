@@ -1,10 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart%20';
 import 'package:go_router/go_router.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:m2/services/api_services/api_services.dart';
 import 'package:m2/services/api_services/suggested_product_api.dart';
+import 'package:m2/services/functions/db_functions.dart';
 import 'package:m2/services/search_services.dart';
 import 'package:m2/utilities/utilities.dart';
 import 'package:m2/utilities/widgets/products_may_like_widget.dart';
@@ -12,7 +12,7 @@ import 'package:m2/utilities/widgets/widgets.dart';
 
 import 'package:m2/views/product_views/product_view.dart';
 
-import '../../services/models/product_model.dart';
+import '../../services/models/recent_searches/recent_model.dart';
 import '../../utilities/widgets/search/popular_item.dart';
 
 class SearchView extends StatefulWidget {
@@ -32,6 +32,7 @@ class _SearchViewState extends State<SearchView> {
   TextEditingController searchQuery = TextEditingController();
   List<dynamic> suggestedProducts = [];
   bool _isloading = false;
+
   // late SharedPreferences preferences;
   // List<String> recentSearches = [];
 
@@ -53,6 +54,7 @@ class _SearchViewState extends State<SearchView> {
 
   @override
   Widget build(BuildContext context) {
+    getAllSearches();
     Size size = MediaQuery.of(context).size;
     return BuildScaffold(
       currentIndex: 1,
@@ -92,7 +94,8 @@ class _SearchViewState extends State<SearchView> {
                     child: IconButton(
                       splashRadius: 25,
                       onPressed: () {
-                      // async {
+                        addRecentSearch();
+                        // async {
                         // preferences = await SharedPreferences.getInstance();
                         // setState(() {
                         //   recentSearches.add(searchQuery.text);
@@ -142,7 +145,20 @@ class _SearchViewState extends State<SearchView> {
                           color: Colors.red,
                         ),
                       )
-                    : ProductsYouMayLikeWidget(suggestedProducts: suggestedProducts),
+                    : Query(
+                        options: QueryOptions(
+                            document: gql(SuggestedApi.suggestedProducts)),
+                        builder: (result, {fetchMore, refetch}) {
+                          if ((result.isLoading && result.data == null)) {
+                            return const BuildLoadingWidget();
+                          } else {
+                            return ProductsYouMayLikeWidget(
+                                suggestedProducts: suggestedProducts,
+                            data: result.data!, refetch: refetch
+                            );
+                          }
+                        },
+                      ),
           ],
         ),
       ),
@@ -164,5 +180,13 @@ class _SearchViewState extends State<SearchView> {
 
       _isloading = false;
     });
+  }
+
+  void addRecentSearch() {
+    final rSearch = searchQuery.text.trim();
+    if(rSearch.isNotEmpty){
+      final sDetails = RecentSearchModel(search: rSearch);
+      addSearch(sDetails);
+    }
   }
 }
