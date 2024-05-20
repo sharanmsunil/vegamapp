@@ -20,8 +20,10 @@ import 'package:m2/views/auth/auth.dart';
 import 'package:m2/views/cart_views/cart_addresss_view.dart';
 import 'package:provider/provider.dart';
 
+
 import '../../services/api_services/api_services.dart';
 import '../../services/api_services/suggested_product_api.dart';
+import '../product_views/product_view.dart';
 
 class CartView extends StatefulWidget {
   const CartView({super.key});
@@ -46,7 +48,6 @@ class _CartViewState extends State<CartView> {
   late AuthToken token;
 
   List<dynamic> suggestedProducts = [];
-  bool _isloading = false;
 
   getCart() async {
     cartData = Provider.of<CartData>(context);
@@ -66,9 +67,7 @@ class _CartViewState extends State<CartView> {
   }
 
   void fetchProducts() async {
-    setState(() {
-      _isloading = true;
-    });
+
     HttpLink link = HttpLink(ApiServices.path);
     GraphQLClient qlClient =
         GraphQLClient(link: link, cache: GraphQLCache(store: HiveStore()));
@@ -78,7 +77,7 @@ class _CartViewState extends State<CartView> {
       suggestedProducts = queryResult.data!['products']['items'];
       // cartProducts = queryResult1.data!['products']['items'];
 
-      _isloading = false;
+
     });
   }
 
@@ -126,7 +125,7 @@ class _CartViewState extends State<CartView> {
                     },
                     errorMsg: result.exception!.graphqlErrors.isNotEmpty
                         ? result.exception?.graphqlErrors[0].message
-                        : "An error occured",
+                        : "An error occurred",
                   ),
                 );
               }
@@ -606,77 +605,81 @@ class _CartViewState extends State<CartView> {
                       borderRadius: const BorderRadius.all(Radius.circular(15)),
                     )
                   ]),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    margin: const EdgeInsets.symmetric(horizontal: 5),
-                    height: 100,
-                    decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(15),
-                        ),
-                        border: Border.all(
-                            color: AppColors.primaryColor, width: 2)),
+                  child: InkWell(
+                    onTap: () => context.push(
+                        '/${ProductView.route}/${item['product']['url_key']}.${item['product']['url_suffix']}'),
                     child: Container(
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                bottomLeft: Radius.circular(10)),
-                            child: CachedNetworkImage(
-                              imageUrl: item['product']['image']['url'],
-                              fit: BoxFit.cover,
-                            ),
+                      padding: const EdgeInsets.all(10),
+                      margin: const EdgeInsets.symmetric(horizontal: 5),
+                      height: 100,
+                      decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(15),
                           ),
-                          // const SizedBox(
-                          //   width: 10,
-                          // ),
-                          SizedBox(
-                            width: size.width / 3,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                    item['product']['name'].length > 20
-                                        ? "${item['product']['name'].substring(0, 20.toInt())}..."
-                                        : item['product']['name'],
-                                    style: AppStyles.getMediumTextStyle(
-                                        fontSize: 12,
-                                        color: AppColors.fontColor)),
-                                BuildPriceWithOffer(
-                                  price: f.format(item['product']
-                                          ['special_price'] ??
-                                      item['product']['price_range']
-                                              ['minimum_price']['regular_price']
-                                          ['value']),
-                                  originalPrice: item['product']['price_range']
-                                              ['maximum_price']['regular_price']
-                                          ['value']
-                                      .toString(),
-                                  offer: item['product']['price_range']
-                                              ['maximum_price']['discount']
-                                          ['percent_off'] *
-                                      1.0,
-                                  priceSize: 13,
-                                  currency: item['product']['price_range']
-                                          ['minimum_price']['regular_price']
-                                      ['currency'],
-                                ),
-                              ],
+                          border: Border.all(
+                              color: AppColors.primaryColor, width: 2)),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  bottomLeft: Radius.circular(10)),
+                              child: CachedNetworkImage(
+                                imageUrl: item['product']['image']['url'],
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          // const SizedBox(width: 40,),
-                          getItemNoChanger(
-                              size: size,
-                              item: item,
-                              cartData: cartData,
-                              refetch: refetch),
-                        ],
+                            // const SizedBox(
+                            //   width: 10,
+                            // ),
+                            SizedBox(
+                              width: size.width / 3,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      item['product']['name'].length > 20
+                                          ? "${item['product']['name'].substring(0, 20.toInt())}..."
+                                          : item['product']['name'],
+                                      style: AppStyles.getMediumTextStyle(
+                                          fontSize: 12,
+                                          color: AppColors.fontColor)),
+                                  BuildPriceWithOffer(
+                                    price: f.format(item['product']
+                                            ['special_price'] ??
+                                        item['product']['price_range']
+                                                ['minimum_price']['regular_price']
+                                            ['value']),
+                                    originalPrice: item['product']['price_range']
+                                                ['maximum_price']['regular_price']
+                                            ['value']
+                                        .toString(),
+                                    offer: item['product']['price_range']
+                                                ['maximum_price']['discount']
+                                            ['percent_off'] *
+                                        1.0,
+                                    priceSize: 13,
+                                    currency: item['product']['price_range']
+                                            ['minimum_price']['regular_price']
+                                        ['currency'],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // const SizedBox(width: 40,),
+                            getItemNoChanger(
+                                size: size,
+                                item: item,
+                                cartData: cartData,
+                                refetch: refetch),
+                          ],
+                        ),
                       ),
                     ),
                   ),

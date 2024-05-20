@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -12,9 +12,7 @@ import 'package:m2/views/product_views/product_view.dart';
 import 'package:provider/provider.dart';
 
 import '../../services/api_services/product_apis.dart';
-import '../../services/models/product_model.dart';
 import '../../services/state_management/cart/cart_data.dart';
-import '../../services/state_management/token/token.dart';
 
 class MyOrderDetailView extends StatefulWidget {
   const MyOrderDetailView({super.key, required this.orderId});
@@ -180,6 +178,7 @@ class _MyOrderDetailViewState extends State<MyOrderDetailView> {
             status
             product_sku
             product_url_key
+            product_image
             quantity_ordered
             product_sale_price{
                 value
@@ -267,10 +266,12 @@ class _BuildOrderDetailContainerState extends State<BuildOrderDetailContainer> {
         children: [
           Container(
             width: 100,
+            padding: const EdgeInsets.all(5),
             decoration:  BoxDecoration(
                 borderRadius: const BorderRadius.all(Radius.circular(10)),
-                color: AppColors.greyBgColor
+              border: Border.all(color: AppColors.primaryColor,width: 2)
             ),
+            child: CachedNetworkImage(imageUrl: widget.data['product_image'],fit: BoxFit.contain,),
           ),
           const SizedBox(width: 5,),
           Column(
@@ -298,7 +299,7 @@ class _BuildOrderDetailContainerState extends State<BuildOrderDetailContainer> {
                     TextSpan(
                       text: "$currency: ",
                       style: AppStyles.getMediumTextStyle(
-                          fontSize: 12, color: AppColors.primaryColor),
+                          fontSize: 10, color: AppColors.primaryColor),
                       children: [
                         TextSpan(
                             text:
@@ -318,14 +319,14 @@ class _BuildOrderDetailContainerState extends State<BuildOrderDetailContainer> {
                 TextSpan(
                   text: "Qty: ",
                   style: AppStyles.getMediumTextStyle(
-                      fontSize: 12, color: AppColors.primaryColor),
+                      fontSize: 10, color: AppColors.primaryColor),
                   children: [
                     TextSpan(
                         text:
                         widget.data['quantity_ordered'].toString(),
                         //"${2*widget.data['product_sale_price']['value']}".toString(),
                         style: AppStyles.getMediumTextStyle(
-                            fontSize: 12, color: AppColors.fontColor)),
+                            fontSize: 10, color: AppColors.fontColor)),
                   ],
                 ),
               ),
@@ -344,32 +345,32 @@ class _BuildOrderDetailContainerState extends State<BuildOrderDetailContainer> {
     );
   }
 
-  Column _getMobileView() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _getOrderDetails(),
-        const SizedBox(height: 20),
-        _getOrderPrice(),
-        const SizedBox(height: 10),
-        // _getOrderDelivery(),
-        // const SizedBox(height: 10),
-        if (!widget.isReturn)
-          SizedBox(
-            width: widget.size.width,
-            child: Wrap(
-              alignment: WrapAlignment.spaceBetween,
-              children: [
-                _trackOrderButton(),
-                // _orderCancelButton(),
-                _reOrderButton()
-              ],
-            ),
-          ),
-        if (widget.isReturn) _returnButton()
-      ],
-    );
-  }
+  // Column _getMobileView() {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       _getOrderDetails(),
+  //       const SizedBox(height: 20),
+  //       _getOrderPrice(),
+  //       const SizedBox(height: 10),
+  //       // _getOrderDelivery(),
+  //       // const SizedBox(height: 10),
+  //       if (!widget.isReturn)
+  //         SizedBox(
+  //           width: widget.size.width,
+  //           child: Wrap(
+  //             alignment: WrapAlignment.spaceBetween,
+  //             children: [
+  //               _trackOrderButton(),
+  //               // _orderCancelButton(),
+  //               _reOrderButton()
+  //             ],
+  //           ),
+  //         ),
+  //       if (widget.isReturn) _returnButton()
+  //     ],
+  //   );
+  // }
 
   Row _getOrderDetails() {
     return Row(
@@ -428,14 +429,14 @@ class _BuildOrderDetailContainerState extends State<BuildOrderDetailContainer> {
     );
   }
 
-  TextButton _returnButton() {
-    return TextButton(
-      style: TextButton.styleFrom(padding: EdgeInsets.zero),
-      onPressed: () {},
-      child: Text('Returns',
-          style: AppStyles.getMediumTextStyle(fontSize: 17, color: Colors.red)),
-    );
-  }
+  // TextButton _returnButton() {
+  //   return TextButton(
+  //     style: TextButton.styleFrom(padding: EdgeInsets.zero),
+  //     onPressed: () {},
+  //     child: Text('Returns',
+  //         style: AppStyles.getMediumTextStyle(fontSize: 17, color: Colors.red)),
+  //   );
+  // }
 
   TextButton _orderCancelButton() {
     return TextButton(
@@ -460,7 +461,7 @@ class _BuildOrderDetailContainerState extends State<BuildOrderDetailContainer> {
   //               cartData.putCartCount(
   //                   data['reorderItems']['cart']['total_quantity'].ceil());
   //
-  //               // TODO: CartView
+  //
   //               // navigate(context, Cart.route, arguments: {"page": 3});
   //             } else {
   //               for (var i in data['reorderItems']['userInputErrors']) {

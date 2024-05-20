@@ -1,4 +1,4 @@
-import 'dart:developer';
+// import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -8,8 +8,9 @@ import 'package:m2/services/models/product_model.dart' show ProductModel, Items;
 import 'package:m2/utilities/utilities.dart';
 import 'package:m2/utilities/widgets/widgets.dart';
 import 'package:m2/views/product_views/product_description_view.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../services/functions/db_functions.dart';
+import '../../services/models/recent_searches/recent_model.dart';
 import '../../utilities/widgets/search/recent_searches.dart';
 
 class ProductView extends StatefulWidget {
@@ -71,9 +72,9 @@ class _ProductViewState extends State<ProductView> {
   String? selectedType;
 
   // late SharedPreferences preferences;
-  String? searchProduct;
-  List<String> recentSearches = [];
-  late SharedPreferences preferences;
+
+
+
 
   @override
   void initState() {
@@ -98,21 +99,19 @@ class _ProductViewState extends State<ProductView> {
         fetchMore!(opts!);
       }
     });
-    fetchList();
+    addRecentSearch();
   }
 
-  // fetchList()  {
-  //   recentSearches.add(widget.searchQuery!);
-  // }
-
-  fetchList() async {
-    preferences = await SharedPreferences.getInstance();
-    setState(() {
-      recentSearches = preferences.getStringList('recentSearches') ?? [];
-      recentSearches.add(widget.searchQuery!);
-      preferences.setStringList('recentSearches', recentSearches);
-    });
+  Future<void> addRecentSearch() async{
+    final rSearch = widget.searchQuery?.trim();
+    if(rSearch!.isNotEmpty){
+      final sDetails = RecentSearchModel(search: rSearch);
+      await addSearch(sDetails);
+    }
   }
+
+
+
 
   getQueryString() {
     filterKeys.clear();
@@ -377,9 +376,7 @@ class _ProductViewState extends State<ProductView> {
                                             : result.data!['products']['items']
                                                 [0]['categories'],
                                         screenWidth: constraints.maxWidth),
-
-                                recentSearches.isNotEmpty
-                                    ? SizedBox(
+                                SizedBox(
                                         height: 100,
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -393,12 +390,11 @@ class _ProductViewState extends State<ProductView> {
                                                       color:
                                                           AppColors.fadedText),
                                             ),
-                                             RecentSearches(recentSearched: widget.searchQuery,),
+                                             const RecentSearches(),
                                             const SizedBox(height: 10),
                                           ],
                                         ),
-                                      )
-                                    : const SizedBox(height: 10),
+                                      ),
                                 const SizedBox(height: 10,),
                                 GridView.builder(
                                   // padding: const EdgeInsets.all(20),
